@@ -34,12 +34,9 @@ struct Cli {
 fn main() {
     let cli = Cli::parse();
 
-    let service = cli.service;
     let domain = "fanghanel.dev".to_string();
 
-    let random = get_random();
-
-    let email = format!("{}-{}@{}", service, random, domain);
+    let email = format!("{}-{}@{}", cli.service, get_random(), domain);
 
     println!("{}", email);
 }
