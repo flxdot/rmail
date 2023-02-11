@@ -8,12 +8,9 @@ struct LowerAlphanumeric;
 
 impl Distribution<u8> for LowerAlphanumeric {
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> u8 {
-        const RANGE: usize = 26 + 10;
-        const GEN_ASCII_STR_CHARSET: &[u8] = b"abcdefghijklmnopqrstuvwxyz\
-                0123456789";
-        let rand_idx: usize = rng.gen_range(0..RANGE);
-
-        return GEN_ASCII_STR_CHARSET[rand_idx];
+        const CHOICES: &[u8] = b"abcdefghijklmnopqrstuvwxyz0123456789";
+        let idx: usize = rng.gen_range(0..CHOICES.len());
+        return CHOICES[idx];
     }
 }
 
