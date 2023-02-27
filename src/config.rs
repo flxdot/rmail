@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use std::io::{self, Write};
 use std::path::{Path, PathBuf};
 use std::{fs, process};
 
@@ -62,4 +63,40 @@ impl ConfigFile for Config {
             Err(why) => panic!("Could not write config: {}", why),
         }
     }
+}
+
+fn ask_user_for_input(name: String, phrase: Option<String>) -> String {
+    let mut input = String::new();
+    let phrase = format!(
+        "{}",
+        phrase.unwrap_or(format!("What is the desired {}?: ", name))
+    );
+
+    print!("{}", &phrase);
+    let _ = io::stdout().flush();
+
+    loop {
+        match io::stdin().read_line(&mut input) {
+            Ok(_) => break,
+            Err(_) => {
+                let _ = io::stdout().flush();
+                print!("{}", &phrase)
+            }
+        }
+    }
+
+    return input.trim().to_string();
+}
+
+pub fn build_config() {
+    let domain = ask_user_for_input("domain".to_string(), None);
+    if domain.contains("@") && domain.contains(".") {
+        println!(
+            "{} seems not to be a valid domain. Remember not to include the @ sign.",
+            domain
+        );
+    }
+    let new_config = Config { domain: domain };
+
+    new_config.save();
 }
